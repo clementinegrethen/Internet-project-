@@ -1,0 +1,47 @@
+#!/bin/bash
+ip link set dev eth0 up
+ip a a 192.168.193.130/25 dev eth0
+ip link set dev eth1 up
+ip a a 200.200.25.1/26 dev eth1
+route add default gw 200.200.25.2
+
+cd /etc/default
+service isc-dhcp-server restart
+cd /
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE #pour equip utilisateur
+# bloquer un flux qui n'est pax explicitement autorisé 
+iptables -P INPUT DROP #bloquer les paquets entrants
+iptables -P FORWARD DROP # bloquer les paquets transférés
+iptables -P OUTPUT DROP # bloquer les paquets sortants
+
+# on ajoute la liste des autorisations au cas par cas:
+
+iptables -t filter -A FORWARD -p icmp -j ACCEPT 
+iptables -t filter -A INPUT -p icmp -j ACCEPT 
+iptables -t filter -A OUTPUT -p icmp -j ACCEPT 
+
+iptables -t filter -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 80 -j ACCEPT # HTTP
+
+iptables -t filter -A FORWARD -p tcp --sport 443 -j ACCEPT 
+iptables -t filter -A FORWARD -p tcp --dport 443 -j ACCEPT # HTTPS
+
+iptables -t filter -A FORWARD -p tcp --sport 20 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 20 -j ACCEPT # FTP données actifs
+
+iptables -t filter -A FORWARD -p tcp --sport 21 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 21 -j ACCEPT # FTP commandes: écoute 
+
+# autoriser les requêtes DNS (sport: source, dsport:destination)
+
+
+
+iptables -t filter -A FORWARD -p tcp --sport 53 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 53 -j ACCEPT # DNS tcp
+iptables -t filter -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -t filter -A FORWARD -p udp --dport 53 -j ACCEPT # DNS udp
+
+#données passifs
+iptables -A FORWARD -p tcp --sport 1024: --dport 1024: -j ACCEPT
+
+

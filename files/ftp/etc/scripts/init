@@ -1,0 +1,17 @@
+#!/bin/bash
+ ip link set dev eth0 up
+ip a a 200.200.25.196/26 dev eth0
+route add default gw 200.200.25.193
+
+echo nameserver 200.200.25.194 >> /etc/resolv.conf
+echo 127.0.0.1 ftp >> /etc/hosts
+
+
+chmod 644 /etc/proftpd/proftpd.conf
+chmod 644 /etc/proftpd/modules.conf
+
+chmod 644 etc/proftpd
+
+
+service proftpd start
+

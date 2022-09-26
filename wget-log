@@ -1,0 +1,6 @@
+--2022-05-10 11:05:55--  http://200.200.25.195/
+Connexion à 200.200.25.195:80… échec : Connexion terminée par expiration du délai d'attente.
+Nouvel essai.
+
+--2022-05-10 11:08:07--  (essai :  2)  http://200.200.25.195/
+Connexion à 200.200.25.195:80… échec : Le réseau n'est pas accessible.

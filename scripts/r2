@@ -1,0 +1,21 @@
+#!/bin/bash
+ ip link set dev eth1 up
+ 
+ ip a a 200.200.25.67/26 dev eth1
+ip link set dev eth0 up
+ip a a 200.200.25.130/26 dev eth0
+#ip route add 200.200.25.0/26 via 200.200.25.65
+#ip route add 200.200.25.192/26 via 200.200.25.131
+cd etc/quagga
+service quagga restart
+#telnet localhost ripd
+#zebra
+#en
+#conf t
+#router rip
+#network 200.200.25.64/26
+#network 200.200.25.128/26
+cd /
+
+
+

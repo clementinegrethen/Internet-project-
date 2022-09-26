@@ -1,0 +1,44 @@
+#!/bin/bash
+ ip link set dev eth1 up
+ ip a a 200.200.25.131/26 dev eth1
+ ip link set dev eth0 up
+ip a a 200.200.25.193/26 dev eth0
+#ip route add 200.200.25.64/26 via 200.200.25.130
+ #ip route add 200.200.25.0/26 via 200.200.25.130
+
+
+cd etc/quagga
+service quagga restart
+#telnet localhost ripd
+#zebra
+#en
+#conf t
+#router rip
+#network 200.200.25.128/26
+#network 200.200.25.192/26
+cd /
+# bloque les entrÃ©es / autor sorties
+iptables -P FORWARD DROP
+
+iptables -t filter -A FORWARD -p icmp -j ACCEPT # acc ping 
+iptables -t filter -A INPUT -p icmp -j ACCEPT # acc ping 
+iptables -t filter -A OUTPUT -p icmp -j ACCEPT # acc ping 
+iptables -t filter -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 80 -j ACCEPT # HTTP
+iptables -t filter -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 443 -j ACCEPT # HTTPS
+iptables -t filter -A FORWARD -p tcp --sport 20 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 20 -j ACCEPT # FTP donnÃ©es
+iptables -t filter -A FORWARD -p tcp --sport 21 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 21 -j ACCEPT # FTP ecoute
+iptables -t filter -A FORWARD -p tcp --sport 53 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --dport 53 -j ACCEPT # DNS tcp
+iptables -t filter -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -t filter -A FORWARD -p udp --dport 53 -j ACCEPT # DNS udp
+iptables -A FORWARD -p tcp --sport 1024: --dport 1024: -j ACCEPT
+
+
+
+
+
+

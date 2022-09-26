@@ -1,0 +1,65 @@
+network:
+  name: projet_internet
+  version: 0.1
+  hosts:
+    - ue
+      mode : netns
+      init : ./scripts/ue
+ 
+    - box
+      mode : docker
+      image : dhcp_n7:latest
+      files : ./files/box/etc:/
+ 
+ 
+    - r1
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/r1/etc:/
+ 
+    - r2
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/r2/etc:/
+ 
+ 
+    - faiservices
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/faiservices/etc:/
+ 
+ 
+    - dns
+      mode : docker
+      image : dns_n7:latest
+      files : ./files/dns/etc:/
+ 
+    - web
+      mode : docker
+      image : apache_n7:latest
+      files : ./files/web/var:/
+ 
+    - ftp
+      mode : docker
+      image : ftp_n7:latest
+      files : ./files/ftp/etc:/
+ 
+    - faiacces
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/faiacces/etc:/
+ 
+  links :
+    - box:eth0!ue:eth0
+    - box:eth1!faiacces:eth0
+ 
+  bridges:
+    - Switch0
+      interfaces: r2:eth1!r1:eth1!faiacces:eth1!
+    - Switch1
+      interfaces: r1:eth0!r2:eth0!faiservices:eth1!
+    - Switch2
+      interfaces: dns:eth0!web:eth0!ftp:eth0!faiservices:eth0!
+ 
+  consoles :
+    - all
